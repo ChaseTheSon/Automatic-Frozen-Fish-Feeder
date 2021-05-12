@@ -58,7 +58,7 @@ if (now.hour() == Hour && now.minute()== Minute && now.second()== 00) {
   delay(1000);
   delay(1000);
 
-        for (int x = 0; x < 5; x++) {    //repeats
+        for (int x = 0; x < 30; x++) {    //repeats
   for (pos = 0; pos <= 30; pos += 1) { // goes from 0 degrees to 180 degrees
     // in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
