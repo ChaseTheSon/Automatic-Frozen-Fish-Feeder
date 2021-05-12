@@ -7,8 +7,8 @@ const int RELAY_PIN = 8;  // the Arduino pin, which connects to the IN pin of re
 const int stepsPerRevolution = 2048;
 
 
-const int Hour = 17;//Set the hour you want the fish to be fed.
-const int Minute = 55; //Set the Minute you want the fish to be fed.
+const int Hour = 12;//Set the hour you want the fish to be fed.
+const int Minute = 30; //Set the Minute you want the fish to be fed.
 
 
 RTC_DS1307 rtc;
