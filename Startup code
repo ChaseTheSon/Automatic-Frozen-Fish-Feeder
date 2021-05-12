@@ -1,0 +1,81 @@
+#include <Servo.h>
+#include <Stepper.h>
+#include <Wire.h>
+#include "RTClib.h"
+
+const int RELAY_PIN = 8;  // the Arduino pin, which connects to the IN pin of relay
+const int stepsPerRevolution = 2048;
+
+
+const int Hour = 17;//Set the hour you want the fish to be fed.
+const int Minute = 55; //Set the Minute you want the fish to be fed.
+int x = 0;
+
+RTC_DS1307 rtc;
+Stepper myStepper = Stepper(stepsPerRevolution, 10, 12, 11, 13);
+Servo myservo;  // create servo object to control a servo
+// twelve servo objects can be created on most boards
+
+int pos = 0;    // variable to store the servo position
+
+void setup() {
+  rtc.begin();
+  Serial.begin(57600);
+  myservo.attach(9);  // attaches the servo on pin 9 to the servo object
+  myStepper.setSpeed(5);
+  pinMode(RELAY_PIN, OUTPUT); // initialize digital pin
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // Only run this if you need to set the time from you computer to the RTC
+}
+
+void loop() {
+DateTime now = rtc.now();
+Serial.print(now.hour(), DEC);
+ Serial.print(':');
+ Serial.print(now.minute(), DEC);
+ Serial.print(':');
+ Serial.print(now.second(), DEC);
+ Serial.println();
+if (x == 0) {
+  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(4);                    // waits 15ms for the servo to reach the position
+   
+  }
+ 
+
+  for (pos = 180; pos >= 10; pos -= 1) { // goes from 180 degrees to 0 degrees
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(7);                       // waits 15ms for the servo to reach the position
+
+   
+  }
+    myStepper.step(stepsPerRevolution/15);
+   delay(500);
+  digitalWrite(RELAY_PIN, HIGH);
+  delay(5000);
+  digitalWrite(RELAY_PIN, LOW);
+  delay(1000);
+  delay(1000);
+
+        for (int x = 0; x < 30; x++) {    //repeats
+  for (pos = 0; pos <= 30; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                    // waits 15ms for the servo to reach the position
+ 
+  }
+ for (pos = 30; pos >= 0; pos -= 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                    // waits 15ms for the servo to reach the position
+   
+
+
+  }
+  }
+
+ x = 1;
+delay(1000);
+}            
+}
