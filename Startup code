@@ -9,7 +9,8 @@ const int stepsPerRevolution = 2048;
 
 const int Hour = 12; //Set the hour you want the fish to be fed.
 const int Minute = 30; //Set the Minute you want the fish to be fed.
-int x = 0;
+int p = 0;
+int x = 1;
 
 RTC_DS1307 rtc;
 Stepper myStepper = Stepper(stepsPerRevolution, 10, 12, 11, 13);
@@ -26,16 +27,7 @@ void setup() {
   pinMode(RELAY_PIN, OUTPUT); // initialize digital pin
   rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // Only run this if you need to set the time from you computer to the RTC
 }
-
-void loop() {
-DateTime now = rtc.now();
-Serial.print(now.hour(), DEC);
- Serial.print(':');
- Serial.print(now.minute(), DEC);
- Serial.print(':');
- Serial.print(now.second(), DEC);
- Serial.println();
-if (x == 0) {
+void zero() {
   for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
     // in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
@@ -49,23 +41,17 @@ if (x == 0) {
     delay(7);                       // waits 15ms for the servo to reach the position
 
    
-  }
-  delay(10000);
-  
-  digitalWrite(RELAY_PIN, HIGH);
-    myStepper.step(stepsPerRevolution/15);
-   delay(5000);
- digitalWrite(RELAY_PIN, LOW);
-  delay(1000);
-  
-        for (int x = 0; x < 30; x++) {    //repeats
-  for (pos = 0; pos <= 30; pos += 1) { // goes from 0 degrees to 180 degrees
+  } 
+}
+void shake() {
+       for (int x = 0; x < 30; x++) {    //repeats
+  for (pos = 0; pos <= 30; pos += 1) { // goes from 0 degrees to 30 degrees
     // in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(15);                    // waits 15ms for the servo to reach the position
  
   }
- for (pos = 30; pos >= 0; pos -= 1) { // goes from 0 degrees to 180 degrees
+ for (pos = 30; pos >= 0; pos -= 1) { // goes from 30 to 0 degrees
     // in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(15);                    // waits 15ms for the servo to reach the position
@@ -75,4 +61,37 @@ if (x == 0) {
   }
   }
 }
+void loop() {
+DateTime now = rtc.now();
+Serial.print(now.hour(), DEC);
+ Serial.print(':');
+ Serial.print(now.minute(), DEC);
+ Serial.print(':');
+ Serial.print(now.second(), DEC);
+ Serial.println();
+ if (x == 1) {
+  zero();
+  delay(10000);
+  x = 0;
+ }
+if (p == 0) {
+ zero();
+  
+ digitalWrite(RELAY_PIN, HIGH);
+ myStepper.step(stepsPerRevolution/15);
+ delay(5000);
+ digitalWrite(RELAY_PIN, LOW);
+ delay(1000);
+ 
+ shake();
+ zero();
+ digitalWrite(RELAY_PIN, HIGH); 
+ delay(5000);
+ digitalWrite(RELAY_PIN, LOW);
+ shake();
+ zero();
+   
+delay(1000);
+p = 1;
+}            
 }
